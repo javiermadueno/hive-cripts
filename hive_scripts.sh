@@ -22,27 +22,30 @@ usage() {
 			echo ""
 			echo "Params:"
 			echo "      -d|--database database_name"
-			echo "      -h|--help: print this help info and exit"
+			echo "      -h|--help: imprime la ayuda"
 			echo "Examples:"
 			echo ""
-			echo "		./hive_scripts.sh init -d a_database_name "
+			echo "		./hive_scripts.sh init -d c3 "
+			echo "		./hive_scripts.sh init --database c3 "
 			echo ""
 			;;
 		import)
 			echo ""
-			echo "Usage: hive_scripts.sh import [-h|--help]"
+			echo "Uso: hive_scripts.sh import [-h|--help]"
 			echo ""
 			echo "  Realiza una importacion de datos de la tabla especificada"
 			echo ""
 			echo "Params:"
 			echo "      -d|--database database_name"
 			echo "      -t|--table table_name"
-			echo "      -b|--begin_date yyyymmdd"
-			echo "      -e|--end_date yyyymmdd"
-			echo "      -h|--help: print this help info and exit"
+			echo "      -h|--help: imprime la ayuda"
 			echo "Examples:"
 			echo ""
-			echo "		./hive_scripts.sh import -d a_database_name -t a_table_name -b 20120122 -e 20130122"
+			echo "		./hive_scripts.sh import -d c3 -t compra --csv /compras/compras1.csv"
+			echo "		./hive_scripts.sh import -d c3 -t cliente"
+			echo "		./hive_scripts.sh import -d c3 -t segmento"
+			echo "		./hive_scripts.sh import -d c3 -t categoria"
+			echo "		./hive_scripts.sh import -d c3 -t producto"
 			echo ""
 			;;		
 	esac
@@ -61,7 +64,6 @@ args() {
             shift
             import $@
             ;;
-
         *)
             echo >&2 "Comando invalido: $1"
             usage
@@ -175,6 +177,9 @@ import() {
             producto)
 		importa_productos
             	;;
+	    segmento)
+		importa_segmentos
+            	;;
             *)
             	echo >&2 "Invalid argument: $table"
             	usage "import"
@@ -244,7 +249,24 @@ echo "importa productos"
 		--hive-import --hive-table $database.producto --hive-overwrite`
 
 	 echo "hadoop fs -rm -r /user/$USER/etl/$database/producto"
- 	$(`hadoop fs -rm -r /user/$USER/etl/$database/producto`)
+	res = $(hadoop fs -rm -r /user/$USER/etl/$database/producto)
+	echo $res
+}
+
+importa_segmentos(){
+echo "importa segmentos"
+
+
+	 `sqoop import  --connect jdbc:mysql://192.168.100.229:3306/$(echo $database | tr -cd '[[:digit:]]') \
+		--table segmento -m 2 \
+		--username=admin \
+		--password-file  /user/$USER/mysql.password \
+		--warehouse-dir /user/$USER/etl/$database \
+		--hive-import --hive-table $database.segmento --hive-overwrite`
+
+	 echo "hadoop fs -rm -r /user/$USER/etl/$database/segmento"
+ 	 $(`hadoop fs -rm -r /user/$USER/etl/$database/segmento`)
+
 }
 
 # -------------------------------------------------------------------------------------
