@@ -9,8 +9,7 @@ Para inicializar una nueva base de datos
 $ ./hive_scripts.sh init --database c3
 ```
 
-warning 
-Este comando borra, si la hubiera, cualquier base de datos con el mismo nombre.
+**WARNING**: Este comando borra, si la hubiera, cualquier base de datos con el mismo nombre.
 
 ####Importar una tabla a una base de datos concreta.
 Table cliente
