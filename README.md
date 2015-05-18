@@ -3,6 +3,11 @@ Contine los archivos necesarios para la creación de bases de datos, tablas e im
 
 ###Uso
 
+Para empezar hay que copiar el archivo que contiene la contraseña de la base de datos
+```bash
+$ hadoop fs -put mysql.password /user/$USER/mysql.password
+```
+
 ####Inicializar nueva Base de Datos
 Para inicializar una nueva base de datos
 ```bash
