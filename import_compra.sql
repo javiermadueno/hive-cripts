@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS compra(
 	personalizado1 	STRING,
 	personalizado2 	STRING,
 	personalizado3 	STRING)
-PARTITIONED BY (year INT, month INT);
+PARTITIONED BY (fecha_part STRING);
 
 
 
@@ -47,7 +47,7 @@ OVERWRITE INTO TABLE compra_temp;
 set hive.exec.dynamic.partition.mode=nonstrict;
 
 INSERT INTO TABLE compra
-PARTITION(year, month)
+PARTITION(fecha_part)
 SELECT 
 	c.id_compra,
 	c.id_ticket,
@@ -63,8 +63,7 @@ SELECT
 	c.personalizado1,
 	c.personalizado2,
 	c.personalizado3,
-	year(from_unixtime(unix_timestamp(c.fecha,'dd/MM/yyyy HH:mm:ss'))),
-	month(from_unixtime(unix_timestamp(c.fecha,'dd/MM/yyyy HH:mm:ss')))
+	from_unixtime(unix_timestamp(c.fecha,'dd/MM/yyyy HH:mm:ss'), 'yyyy-MM')
 FROM compra_temp c;
 
 set hive.exec.dynamic.partition.mode=strict;

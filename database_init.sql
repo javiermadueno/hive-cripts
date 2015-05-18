@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS compra(
 	personalizado1 		STRING,
 	personalizado2 		STRING,
 	personalizado3 		STRING)
-PARTITIONED BY (year INT, month INT);
+PARTITIONED BY (fecha_part STRING);
 
 
 
