@@ -76,25 +76,28 @@ init() {
 	# init params
 	database=""
 	hive_script="database_init.sql"
+
 	
 	# process args for this block
 	while test $# -gt 0
 	do
-    case $1 in
+	case $1 in
             -d|--database)
             	shift
             	database=$1
             	;;
-        	-h|--help)
+            -h|--help)
             	usage "init"
             	;;
-        	*)
+             *)
             	echo >&2 "Argumento no válido: $1"
             	usage "init"
         	    ;;
     	esac
     	shift
 	done
+
+	crea_archivo
 	
 	# determine if any option is missing	
 	if [ x"$database" == "x" ]; then
@@ -106,6 +109,36 @@ init() {
 	echo "hive -hiveconf DATABASE=$database -f $hive_script" 
 	`hive -hiveconf DATABASE=$database -f $hive_script`
 	exit
+}
+
+crea_archivo(){ 
+file="parameters/$database.parameters"
+	if [ -f $file ];
+		then
+		   echo "Leido el archivo de configuración $file"
+		else
+		   echo "El archivo de configuracion $file no existe. Por favor introduzca los siguientes datos para crearlo."
+			echo "Introduzca la IP del servidor de base de datos:"
+			read IP
+			echo "Introduzca el puerto:"
+			read PORT
+			echo "Introduzca nombre de usuario:"
+			read USERNAME
+			echo "Introduzca contraseña:"
+			read PASS
+			echo -e "--connect\n jdbc:mysql://$IP:$PORT/$(echo $database | tr -cd '[[:digit:]]')\n --username\n $USERNAME\n --password\n $PASS" > $file
+			if [ -f $file ];
+			  then
+			    echo "Fichero de configuración creado correctamente"
+			  else
+			    echo "Ha habido un problema al crear el fichero de configuración. No se puede continuar."
+			    exit
+			fi
+	fi
+
+	
+	
+		
 }
 
 import() {
@@ -152,7 +185,8 @@ import() {
     	shift
 	done
 	
-	
+	crea_archivo
+
 	if [ x"$database" == "x" ]; then
 		echo "missing database name: -d|--database database_name"
 		usage "import"
@@ -211,11 +245,9 @@ importa_clientes(){
 	echo "  --username=admin \ "
   	echo "  --password-file  /user/$USER/mysql.password"
 
-	`sqoop import  --connect jdbc:mysql://192.168.100.229:3306/$(echo $database | tr -cd '[[:digit:]]') \
+	`sqoop import  --options-file ./parameters/$database.parameters \
 	--table cliente \
 	--direct \
-	--username=admin \
-	--password-file  /user/$USER/mysql.password \
 	--warehouse-dir /user/$USER/etl/$database`
 	
 	echo "hive -hiveconf DATABASE=$database -hiveconf USER=$USER -f import_cliente.sql"
@@ -225,12 +257,9 @@ importa_clientes(){
 importa_categorias(){
 	echo "Importa categorias..."
 	
-	`sqoop import \
-	  --connect jdbc:mysql://192.168.100.229:3306/$(echo $database | tr -cd '[[:digit:]]') \
+	`sqoop import --options-file ./parameters/$database.parameters \
 	  --table categoria -m 2 \
 	  --direct \
-	  --username=admin \
-	  --password-file  /user/$USER/mysql.password \
 	  --warehouse-dir /user/$USER/etl/$database \
 	  --hive-import --hive-table $database.categoria  --hive-overwrite`
 
@@ -241,10 +270,8 @@ importa_categorias(){
 importa_productos(){
 echo "importa productos"
 
-	 `sqoop import  --connect jdbc:mysql://192.168.100.229:3306/$(echo $database | tr -cd '[[:digit:]]') \
+	 `sqoop import  --options-file ./parameters/$database.parameters \
 		--table producto -m 2 \
-		--username=admin \
-		--password-file  /user/$USER/mysql.password \
 		--warehouse-dir /user/$USER/etl/$database \
 		--hive-import --hive-table $database.producto --hive-overwrite`
 
@@ -257,10 +284,8 @@ importa_segmentos(){
 echo "importa segmentos"
 
 
-	 `sqoop import  --connect jdbc:mysql://192.168.100.229:3306/$(echo $database | tr -cd '[[:digit:]]') \
+	 `sqoop import  --options-file ./parameters/$database.parameters \
 		--table segmento -m 2 \
-		--username=admin \
-		--password-file  /user/$USER/mysql.password \
 		--warehouse-dir /user/$USER/etl/$database \
 		--hive-import --hive-table $database.segmento --hive-overwrite`
 
