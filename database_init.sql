@@ -106,31 +106,6 @@ CREATE TABLE IF NOT EXISTS categoria(
 	asociado 		INT, 
 	estado 			TINYINT);
 
-CREATE TABLE IF NOT EXISTS segmento(
-	id_segmento 		INT,
-	c_clave 		INT,
-	c_fecha_ini 		TIMESTAMP,
-	c_fecha_fin 		TIMESTAMP,
-	id_vid_segmento 	INT,
-	id_vid 			INT,
-	id_vt 			INT,
-	id_vt_segmento 		INT,
-	id_vid_grupo_segmento 	INT,
-	id_grupo 		INT,
-	id_intervalo 		INT,
-	id_vil 			INT,
-	nombre 			STRING,
-	id_tipo_variable 	TINYINT,
-	id_categoria 		INT,
-	id_proveedor 		INT,
-	id_marca 		INT,
-	query 			STRING,
-	estado 			TINYINT,
-	es_nuevo 		TINYINT,
-	id_vid_segmento_global 	INT,
-	codigo 			STRING,
-	id_vil_segmento 	INT
-)
 
 
 
