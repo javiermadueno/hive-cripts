@@ -248,7 +248,8 @@ importa_clientes(){
 	`sqoop import  --options-file ./parameters/$database.parameters \
 	--table cliente \
 	--direct \
-	--warehouse-dir /user/$USER/etl/$database`
+	--warehouse-dir /user/$USER/etl/$database \
+	--hive-import --hive-table $database.cliente_temp --hive-overwrite`
 	
 	echo "hive -hiveconf DATABASE=$database -hiveconf USER=$USER -f import_cliente.sql"
 	`hive -hiveconf DATABASE=$database -hiveconf USER=$USER -f import_cliente.sql`

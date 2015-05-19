@@ -1,0 +1,6 @@
+--connect
+ jdbc:mysql://192.168.100.229:3306/3
+ --username
+ admin
+ --password
+ icca
