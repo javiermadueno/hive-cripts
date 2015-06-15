@@ -194,7 +194,14 @@ import() {
 	fi
 	
 	if [ x"$table" == "x" ]; then
-		importa_todos
+		if [ x"$csv" == "x" ];
+		then
+		    echo "Se importa sin la tabla compras"
+	   	    importa_todos_menos_compra	
+		else
+		    importa_todos
+		fi
+
 		exit
 	fi
 
@@ -228,6 +235,13 @@ import() {
 importa_todos(){
 	importa_compras
 	importa_clientes
+	importa_categorias
+	importa_productos
+	importa_segmentos
+}
+
+importa_todos_menos_compra() {
+        importa_clientes
 	importa_categorias
 	importa_productos
 	importa_segmentos
