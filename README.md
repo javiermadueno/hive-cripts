@@ -16,6 +16,12 @@ $ ./hive_scripts.sh init --database c3
 
 **WARNING**: Este comando borra, si la hubiera, cualquier base de datos con el mismo nombre.
 
+####Importar todas las tablas de una base de datos concreta
+```bash
+$ ./hive_scripts.sh import --database c3 --csv path/compra.csv
+```
+Con este comando se realiza la importación de todas las tablas. Como se aprecia, es necesario indicar la ruta del fichero de compras que se quiere importar. En caso contrario se producirá un error.
+
 ####Importar una tabla a una base de datos concreta.
 Table cliente
 ```bash

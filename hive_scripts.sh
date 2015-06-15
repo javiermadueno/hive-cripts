@@ -41,7 +41,7 @@ usage() {
 			echo "      -h|--help: imprime la ayuda"
 			echo "Examples:"
 			echo ""
-			echo "		./hive_scripts.sh import -d c3"
+			echo "		./hive_scripts.sh import -d c3 --csv /compras/compras1.csv"
 			echo "		./hive_scripts.sh import -d c3 -t compra --csv /compras/compras1.csv"
 			echo "		./hive_scripts.sh import -d c3 -t cliente"
 			echo "		./hive_scripts.sh import -d c3 -t segmento"
