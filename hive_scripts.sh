@@ -41,6 +41,7 @@ usage() {
 			echo "      -h|--help: imprime la ayuda"
 			echo "Examples:"
 			echo ""
+			echo "		./hive_scripts.sh import -d c3"
 			echo "		./hive_scripts.sh import -d c3 -t compra --csv /compras/compras1.csv"
 			echo "		./hive_scripts.sh import -d c3 -t cliente"
 			echo "		./hive_scripts.sh import -d c3 -t segmento"
@@ -193,8 +194,8 @@ import() {
 	fi
 	
 	if [ x"$table" == "x" ]; then
-		echo "missing table name: -t|--table table_name"
-		usage "import"
+		importa_todos
+		exit
 	fi
 
 
@@ -222,6 +223,14 @@ import() {
 	
 	exit
 	
+}
+
+importa_todos(){
+	importa_compras
+	importa_clientes
+	importa_categorias
+	importa_productos
+	importa_segmentos
 }
 
 importa_compras(){
