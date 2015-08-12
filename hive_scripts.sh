@@ -48,7 +48,7 @@ usage() {
 			echo "		./hive_scripts.sh import -d c3 -t categoria"
 			echo "		./hive_scripts.sh import -d c3 -t producto"
 			echo ""
-			;;		
+			;;
 	esac
 	exit
 }
@@ -78,7 +78,6 @@ init() {
 	database=""
 	hive_script="database_init.sql"
 
-	
 	# process args for this block
 	while test $# -gt 0
 	do
@@ -99,8 +98,8 @@ init() {
 	done
 
 	crea_archivo
-	
-	# determine if any option is missing	
+
+	# determine if any option is missing
 	if [ x"$database" == "x" ]; then
 		echo "missing database name: -d|--database database_name"
 		usage "init"
@@ -137,9 +136,6 @@ file="parameters/$database.parameters"
 			fi
 	fi
 
-	
-	
-		
 }
 
 import() {
@@ -185,14 +181,14 @@ import() {
     	esac
     	shift
 	done
-	
+
 	crea_archivo
 
 	if [ x"$database" == "x" ]; then
 		echo "missing database name: -d|--database database_name"
 		usage "import"
 	fi
-	
+
 	if [ x"$table" == "x" ]; then
 		if [ x"$csv" == "x" ];
 		then
@@ -227,9 +223,8 @@ import() {
             	usage "import"
         	    ;;
     	esac
-	
+
 	exit
-	
 }
 
 importa_todos(){
@@ -253,12 +248,12 @@ importa_compras(){
 		usage "import"
 	fi
 
-	echo "hadoop fs -mkdir -p /user/hive/tmp/compras"
-	`hadoop fs -mkdir -p /user/hive/tmp/compras`
-	echo "hadoop fs -copyFromLocal $csv /user/hive/tmp/compras"
-	`hadoop fs -copyFromLocal $csv /user/hive/tmp/compras`
+	echo "hadoop fs -mkdir -p /user/$USER/tmp/$database/compras"
+	`hadoop fs -mkdir -p /user/$USER/tmp/$database/compras`
+	echo "hadoop fs -copyFromLocal $csv /user/$USER/tmp/$database/compras"
+	`hadoop fs -copyFromLocal $csv /user/$USER/tmp/$database/compras`
 	echo "hive -hiveconf DATABASE=$database -f importa_compra.sql"
-	`hive -hiveconf DATABASE=$database -f import_compra.sql`	
+	`hive -hiveconf DATABASE=$database -hiveconf USER=$USER -f import_compra.sql`	
 }
 
 importa_clientes(){
@@ -273,14 +268,14 @@ importa_clientes(){
 	--direct \
 	--warehouse-dir /user/$USER/etl/$database \
 	--hive-import --hive-table $database.cliente_temp --hive-overwrite`
-	
+
 	echo "hive -hiveconf DATABASE=$database -hiveconf USER=$USER -f import_cliente.sql"
 	`hive -hiveconf DATABASE=$database -hiveconf USER=$USER -f import_cliente.sql`
 }
 
 importa_categorias(){
 	echo "Importa categorias..."
-	
+
 	`sqoop import --options-file ./parameters/$database.parameters \
 	  --table categoria -m 2 \
 	  --direct \
@@ -306,7 +301,6 @@ echo "importa productos"
 
 importa_segmentos(){
 echo "importa segmentos"
-
 
 	 `sqoop import  --options-file ./parameters/$database.parameters \
 		--table segmento -m 2 \

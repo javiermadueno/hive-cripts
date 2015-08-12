@@ -41,7 +41,7 @@ CREATE EXTERNAL TABLE IF NOT EXISTS compra_temp(
 ROW FORMAT DELIMITED FIELDS TERMINATED BY '\073';
 
 
-LOAD DATA INPATH '/user/hive/tmp/compras'
+LOAD DATA INPATH '/user/${hiveconf:USER}/tmp/${hiveconf:DATABASE}/compras'
 OVERWRITE INTO TABLE compra_temp;
 
 set hive.exec.dynamic.partition.mode=nonstrict;
